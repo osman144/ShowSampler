@@ -1,3 +1,4 @@
-body{
-    background-color:wheat;
+.mdl-card__actions {
+    display: flex;
 }
+
