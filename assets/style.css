@@ -69,6 +69,17 @@ body{
     margin-top:10px;
 }
 
+.mdl-card {
+    margin: 8px 8px 8px 8px
+}
+.mdl-card__title {
+    background-color: #000000;
+}
+
+h3, h5 {
+    color: white;
+}
+
 .mdl-card__actions {
     display: flex;
 }
