@@ -64,3 +64,11 @@ body{
     transform: scaleY(-1);
 }
 
+.material-icons{
+    margin-left:10px;
+    margin-top:10px;
+}
+
+.mdl-card__actions {
+    display: flex;
+}
