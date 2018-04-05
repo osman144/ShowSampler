@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TicketFly API</title>
+    <!-- meta data -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- script -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+
+</head>
+<body>
+        <div class="iframe"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/api.js"></script>
+        
+        <script type="text/javascript">
+            "use script";
+            $(document).ready(function(){
+                // Initialize Firebase
+                var config = {
+                    apiKey: "AIzaSyDi8qeTaWRSPo9QQmY8iSeLwKmadVdYVH8",
+                    authDomain: "eventsampler.firebaseapp.com",
+                    databaseURL: "https://eventsampler.firebaseio.com",
+                    projectId: "eventsampler",
+                    storageBucket: "",
+                    messagingSenderId: "285303968035"
+                };
+                firebase.initializeApp(config);
+
+                // variables
+                let database = firebase.database();
+                let artist = ""
+                let artistName = [];
+                let topTrackName = "";
+                let counter = 0;
+                let artistWithTrack = {};
+                let artistWithTrackArray = [];
+                let artistAndTopTrack = [];
+                let add = 0;
+                let counter1= function (){
+                    add++
+                };
+                let arr =[];
+                // console.log(artist);
+                // TicketFLy Ajax Call
+                
+                let ajaxCall = function (){
+                $.ajax({
+                    url: `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=Bloomington
+                          &maxResults=10&fieldGroup=light&fields=id,startDate,venue.name,venue.address1`,
+                    method: "GET",
+                    dataType: 'jsonp',
+                    cors: true,
+                    secure: true,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }).then(function(response) {
+                    // console.log(response);
+                    for (i in response.events){
+                        artist = response.events[i].name;
+                        artist = artist.toLowerCase()
+                        // console.log(artist);
+                        artistName.push(artist)
+                        // console.log(artistName); 
+
+                    } // for loop end for i
+
+                        // console.log(artist);
+                        console.log(artistName);  
+                        // console.log(artistName.length); 
+
+                    for (j in artistName){
+                        // console.log(artistName[j]);
+                        $.ajax({
+                            url: `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=${artistName[j]}&api_key=6a82a8e13684dddbc3db96ec8d600e51&format=json`,
+                            method: "GET"
+                                
+                        }).then(function(response) {
+                            // console.log(response);
+                            let errorToptrack = response.error;
+                            
+                            if (errorToptrack === 6){
+                                counter++;
+                                
+                                // console.log(counter);
+                            }else {
+                                counter1();
+                                let topTrackName =response.toptracks.track[0].name;
+                                artist=response.toptracks.track[0].artist.name
+                                artist = artist.toLowerCase()
+                                artistWithTrack = {
+                                    artist:artist,
+                                    topTrack:topTrackName,
+                                    dateAdded: firebase.database.ServerValue.TIMESTAMP
+                                }
+                                
+                                artistWithTrackArray.push(artist);
+                                artistAndTopTrack.push(artistWithTrack);   
+                                // database.ref().push(artistWithTrackArray);
+                                // database.ref().push(artistAndTopTrack);
+                                database.ref().push(artistWithTrack);
+                            }     
+                            // database.ref().push(artistWithTrack);
+                        });// end of LastFm ajax(nested ajax call) promise function 
+
+                    } // for loop end for j
+
+                    // console.log(artist);
+                    // console.log(artistName);  
+                    // console.log(artistName.length)
+
+                }); // end of TicketFly ajax promise function 
+        
+                }// end of ajax call
+
+            // database.ref().on("child_added", function(snapshot){
+            //     let sv = snapshot.val();
+            //     console.log(sv);
+            // });
+            // function pushingCheckWithoutTopTrack(){
+            //                 // console.log(artistName);
+            //                 // for ( let x = 0; x<artist.length;x++){
+            //                 //     console.log(artist[x])
+            //                     let EventWithoutTrack = {
+            //                         artist:artistName,
+            //                         topTrack:"Not Available",
+            //                         dateAdded: firebase.database.ServerValue.TIMESTAMP
+            //                     }
+            //                     console.log(EventWithoutTrack)
+            //                     database.ref().push(EventWithoutTrack);
+            //                 }
+            function dataRetrival(){
+                database.ref().orderByKey().limitToLast(1).on("child_added", function(snapshot){
+                    let sv = snapshot.val();
+                    // console.log(sv.artist);
+                    // arr.push(sv.artist);
+                    // console.log(arr);
+
+                   
+                       function checkWithoutTopTrack(){
+                            if (artistName.includes(sv.artist)){
+                                let a =artistName.indexOf(sv.artist);
+                                // console.log(a)
+                                // console.log(artistName.indexOf(sv.artist))
+                                console.log(artistName.splice(a,1))
+                              
+                                // console.log(artistName.splice(sv.artist));
+                                console.log(artistName);
+                            }else{
+                                // console.log("ff")
+                            }
+                            //  console.log(artistName);
+                        }
+                        checkWithoutTopTrack() 
+                        // pushingCheckWithoutTopTrack()
+                        // console.log(artistName);
+                 
+                });
+                let update = ["mark poolos","adelitas way","billy strings","nap eyes"]
+                for (let y=0; y<update.length; y++){
+
+                
+                    database.ref().orderByChild("artist").equalTo(update[y]).on("child_added", function(snapshot) {
+                        let sv = snapshot.val();
+                        console.log(sv)
+                        console.log(snapshot.key);
+                        database.ref(snapshot.key).update({heyw: 1,
+                                            heye: 2,hey:3});
+                            console.log(sv);
+                        });
+
+                    }
+                
+                // console.log(artistName);
+                // console.log(arr);
+            }
+            // console.log(arr);
+            if (window.location.reload){
+                database.ref().set(null);
+               
+            }
+            
+            // database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot){
+            //     let sv = snapshot.val();
+            //     console.log(sv);
+            // });
+            ajaxCall();
+            dataRetrival();
+                // console.log(artistName.length); 
+            // .then(function(data){                   
+            //         for (j in artistName){
+            //             // console.log(artistName[j]);
+            //             $.ajax({
+            //                 url: `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=${artistName[j]}&api_key=6a82a8e13684dddbc3db96ec8d600e51&format=json`,
+            //                 method: "GET",
+                            
+            //             }).then(function(response) {
+            //                 // console.log(response);
+            //                 let errorToptrack = response.error;
+            //                 if (errorToptrack === 6){
+            //                     counter++;
+            //                     // console.log(counter);
+            //                 }else {
+            //                     let topTrackName =response.toptracks.track[0].name;
+            //                     artist=response.toptracks.track[0].artist.name
+            //                     artist = artist.toLowerCase()
+            //                     artistWithTrack = {
+            //                         artist:artist,
+            //                         topTrack:topTrackName
+            //                     }
+            //                     artistWithTrackArray.push(artist);
+            //                     artistAndTopTrack.push(artistWithTrack);                           
+            //                 } 
+                            
+            //             }); 
+                        
+            //         }
+
+            //         addArtistWithOutTrack(artistWithTrackArray,artistName); 
+            //         function addArtistWithOutTrack(artistWithTrackArray,artistName){
+            //             // console.log(artistName);
+            //             // console.log(artistWithTrackArray.length);
+            //             for(i in artistName){
+            //                 // console.log(artistName);
+            //                 // console.log(artistWithTrackArray);
+            //                 if ($.inArray(artistWithTrackArray,artistName[i]) == -1){
+            //                     console.log("true")
+            //                 }
+            //                 else{
+            //                     console.log("ff")
+            //                 }
+            //             }
+            //         };
+            //     });
+                
+            //     console.log(artistWithTrackArray);
+            });
+        </script>
+    
+</body>
+
+</html>
+http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=Bloomington&maxResults=30&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners

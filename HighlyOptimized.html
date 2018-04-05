@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>TicketFly API</title>
+
+    <!-- meta data -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- script -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+
+    <style>
+         #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+
+</head>
+    
+<body>
+    
+    <div class="iframe"></div>
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <script type="text/javascript">
+        "use script";
+        // $(document).ready(function(){
+
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCfxyrk88iFuovC_eL1q4LnTdzFpWDNdog",
+                authDomain: "highlyoptimized.firebaseapp.com",
+                databaseURL: "https://highlyoptimized.firebaseio.com",
+                projectId: "highlyoptimized",
+                storageBucket: "highlyoptimized.appspot.com",
+                messagingSenderId: "485374131862"
+              };
+            firebase.initializeApp(config);
+
+            // Globally declared Variables 
+            let database = firebase.database();
+
+            // var for TicketFly API
+            let artistName = "";
+            let ticketPrice = "";
+            let ageLimit = "";
+            let venueAddress = "";
+            let venueName = "";
+            let venueLat = 0;
+            let venueLong = 0;
+            let ticketPurchaseLink= "";
+            let doorsDate = "";
+            let image = ""
+            let eventInfos = {};
+            
+            // Variables for Last FM Api
+            let topTrackName = ""
+
+            // Search input value ($('#searchTerm').val())
+            let city= "Minneapolis";
+            let scroll = 5;
+
+             // TicketFLy Ajax Call
+            $.ajax({
+                    url: `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
+                          &maxResults=${scroll}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`,
+                    method: "GET",
+                    dataType: 'jsonp',
+                    cors: true,
+                    secure: true,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                    }
+            }).then(function(response) {
+                console.log(response);
+                for (i in response.events){
+
+                // Artist/Band Name
+                artistName = response.events[i].name;
+                artistName = artistName.toLowerCase()
+                // console.log(artistName);
+
+                // Ticket Price
+                ticketPrice = response.events[i].ticketPrice;
+                // console.log(ticketPrice);
+                        
+                // Age Limit
+                ageLimit = response.events[i].ageLimitCode;
+                if (ageLimit === null){
+                    // console.log("Not Available");
+                    ageLimit = "Not Available";
+                }else{
+                    
+                    // console.log(ageLimit);
+                    ageLimit = response.events[i].ageLimitCode;
+                }
+
+                // Venue Address
+                venueAddress = response.events[i].venue.address1;
+                // console.log(venueAddress);
+
+                // Venue Name
+                venueName = response.events[i].venue.name;
+                // console.log(venueName);
+
+                // Venue Lat and Long
+                venueLat = response.events[i].venue.lat;
+                venueLat = +venueLat;
+                venueLong = response.events[i].venue.lng;
+                venueLong = +venueLong;
+                // console.log(typeof venueLong);
+                // console.log(venueLat);
+
+
+                // Doors Date
+                startDate = response.events[i]. startDate;
+                // console.log(doorsDate);
+
+                // Ticket Buying Link 
+                ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
+                // console.log(ticketPurchaseLink);
+
+                // Image Link
+                image = response.events[i].headliners[0].image
+                if (image === null){
+                    //  console.log("Not Available");
+                    image = "Not Available";
+                }else{
+                    image = response.events[i].headliners[0].image.medium.path
+                    // console.log(image);
+                }
+                // Object to store data's from TicketFly API
+                eventInfos = {
+                    artistName:artistName,
+                    ticketPrice:ticketPrice,
+                    ageLimit:ageLimit,
+                    venueAddress:venueAddress,
+                    venueName:venueName,
+                    latLong:{lat:venueLat, lng:venueLong},
+                    ticketPurchaseLink:ticketPurchaseLink,
+                    startDate:startDate,
+                    image:image,
+                    dateAdded: firebase.database.ServerValue.TIMESTAMP
+                    }
+                // console.log(eventInfos);
+
+                // push the above object into the database 
+                database.ref().push(eventInfos);
+
+                } // End of for loop (TicketFly API)
+
+            }); // End of promise (TicketFly API)
+
+            // Used to get data from the database for Last FM API call
+            database.ref().orderByChild("startDate").on("child_added", function(snapshot){
+                let sv = snapshot.val();
+                // console.log(sv.artistName);
+                // console.log(sv.startDate);
+
+                $.ajax({
+                    url: `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=${sv.artistName}&api_key=6a82a8e13684dddbc3db96ec8d600e51&format=json`,
+                    method: "GET"               
+                }).then(function(response) {
+                    // console.log(response);
+
+                    // local variables Variables
+                        // to track error response
+                    let errorToptrack = response.error;
+
+                    // Used to differntiate response and error response and push data accordingly 
+                    if (errorToptrack){
+                        // console.log(sv.artistName);
+
+                        // Used to push response from Last Fm API
+                        database.ref().orderByChild("artistName").equalTo(sv.artistName).on("child_added", function(snapshot) {
+                            // console.log(snapshot.val());
+                            database.ref(snapshot.key).update({topTrack: "Not Available",
+                                                            youtubeVideo:"Not Available",
+                                                            childKey:snapshot.key});
+                            // console.log(snapshot.val());
+                        });// End of firebase database 
+                        
+                    }else {
+
+                        // Variables used for YouTubeAPI search
+                        topTrackName =response.toptracks.track[0].name;
+                        topTrack1= topTrackName + " " + "by" + " " + sv.artistName;
+
+                        // get request for the YouTube
+                        $.get(
+                            "https://www.googleapis.com/youtube/v3/search",{
+                            part:"snippet, id",
+                            q:topTrack1,
+                            type: "video",
+                            order:"viewCount",
+                            key:"AIzaSyBM2Gtqqb7pp3P5e9tPNfH-eIfmNlMTR5o"},
+                            function(data){
+                                // console.log(data);
+                                let videoId = data.items[0].id.videoId;
+
+                                // Used to push response from Last Fm API
+                                database.ref().orderByChild("artistName").equalTo(sv.artistName).on("child_added", function(snapshot) {
+                                    // console.log(snapshot.val());
+                                    database.ref(snapshot.key).update({topTrack:topTrackName,
+                                                                        childKey:snapshot.key,
+                                                                        youtubeVideoID:videoId
+                                                                    });
+
+                                });// End of firebase database 
+
+                            }// End of promise response 
+
+                        );   //End of get you tube call 
+
+                    }// End of else condition
+                   
+                });//End of ajax promise (LastFm API)
+
+            });// End of firebase database to add topTrack
+           
+            // Used to get data from the database for Youtube API call
+            // function addYoutubeLink(){
+            //     database.ref().orderByChild("lat").on("child_added", function(snapshot){
+            //         let lv = snapshot.val();
+            //         // console.log(lv);
+            //     });
+
+            // }// End of adding youtube link
+
+            // clears the database whenever the page reloads
+            if (window.location.reload){
+                database.ref().set(null);
+
+            }// End of if to clear the database
+            
+            function initMap() {
+
+                database.ref().orderByChild("dateAdded").on("child_added", function(snapshot){
+                    let lv = snapshot.val();
+                    // console.log(lv.long);
+                    // console.log(typeof lv.long);
+
+                    // location 
+                    // let uluru = {lat: lv.lat, lng: lv.long};
+                    // console.log(uluru)
+
+                    // Dictates the appreance
+                    let options ={
+                        zoom: 8,
+                        center: {lat:44.9778,lng:-93.2650}
+                    }
+
+                    // Add Map
+                    let map = new 
+                    google.maps.Map(document.getElementById("map"), options);
+
+                    // let array=[];
+                    // array.push(lv.latLong);
+
+                    addMarker(lv.latLong);
+
+                    console.log(lv.latLong);
+                   
+
+                    $(".iframe").append(`<p>${lv.latLong.lat}</p>`);
+                   
+                    // Add Marker
+                    function addMarker(coords){
+                        let marker = 
+                        new google.maps.Marker({position:coords,
+                                                 map:map});
+                                                
+                        // Add Info window
+                        let infoWindow = 
+                        new google.maps.InfoWindow({
+                           
+                            content: ` <img src="${lv.image}" alt="${lv.artistName}" width="100px" hieght="100px">
+                                            <div style="color:blue;float:right;padding-left:10px;">
+                                            <h2 style="color:blue;margin:0 0 5px;text-transform: capitalize;">${lv.artistName}</h2>
+                                            <h2 style="color:blue;margin:0 0 5px;">${lv.venueName}</h2>
+                                            <h2 style="color:blue;margin:0 0 5px;">${lv.venueAddress}</h2>
+                                        </div>`
+
+                        });// End of info window     
+
+                        // Add Event Listener on the Marker
+                        marker.addListener("click", function(){
+                            infoWindow.open(map, marker);
+
+                        });// End of click event listener
+   
+                    }
+
+                    // Add Event Listener on the Marker
+                    marker.addListener("click", function(){
+                        infoWindow.open(map, marker);
+                    });// End of click event listener
+
+                }); // End of firebase event listener
+                                
+            }// End of init function
+
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4NJBIRVfCuFbc2SnjrbihfC7QBG3B_xs&callback=initMap">
+    </script>
+</body>
+</html>
