@@ -24,53 +24,34 @@
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 </head>
 <body>
-    <div class="core-toolbar-tall">
-        <div class="rectangle-1">
-            <div class="the-main-thing">
-                The Main Thing
-            </div>
-            <div class="text"> 
-                Text here text here text here 
-            </div>
-
-            <div class="search">
-                <div class="search-bg">
-                    <form action="#">
-                        <i class="material-icons">search</i>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="sample3">
-                            <label class="mdl-textfield__label" for="sample3">Text...</label>
-                        </div>
-
-                    </form>         
-                </div>
-                <div class="search2">
-                </div>
-            </div>
+    <div class="sticky header mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
+        <div class="header-content">
+            <h1 class="header-h1">The Main Stuff</h1>
+            <h3 class="header-h3">Copy Copy Copy</h3>
         </div>
     </div>
-    <div id="display">
-        <results id="results">
-          <div class="mdl-card mdl-shadow--4dp">
-                <div class="mdl-card__title">
-                    <h3>
-                        Band Name
-                    </h3>
-                </div>
-                <div class="mdl-card__title">
-                    <h5>
-                    The Varsity
-                    </h5>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <h6>City</h6>
-                    <div class="mdl-layout-spacer"></div>
-                    <h6>Genere</h6>
-                    <div class="mdl-layout-spacer"></div>
-                    <h6>Money</h6>
-                </div>
-            </div>   
-        </results>
-    </div>
+    <div class="page-content">
+            <results id="results" class="mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
+                    <div class="mdl-card__title">
+                        <h3 class="card-h3">
+                            Band Name
+                        </h3>
+                    </div>
+                    <div class="mdl-card__title">
+                        <h5>
+                        The Varsity
+                        </h5>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <h6>City</h6>
+                        <div class="mdl-layout-spacer"></div>
+                        <h6>Genere</h6>
+                        <div class="mdl-layout-spacer"></div>
+                        <h6>Money</h6>
+                    </div>
+                </div>   
+            </results>
+            </div>
 </body>
 </html>
