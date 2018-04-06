@@ -18,5 +18,20 @@
     background-color: black;
 }
 
+.results-flex {
+    display: flex;
+    justify-content: space-around;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+a {
+    color: black;
+    font-size: 16px;
+}
+
 
   
