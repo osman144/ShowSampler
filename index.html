@@ -24,53 +24,49 @@
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 </head>
 <body>
-    <div class="core-toolbar-tall">
-        <div class="rectangle-1">
-            <div class="the-main-thing">
-                The Main Thing
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="header-container mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Show Sampler</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+                <label class="mdl-button mdl-js-button mdl-button--icon" for="fixed-header-drawer-exp">
+                    <i class="material-icons">search</i>
+                </label>
+            <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
             </div>
-            <div class="text"> 
-                Text here text here text here 
-            </div>
+          </div>
+        </header>
 
-            <div class="search">
-                <div class="search-bg">
-                    <form action="#">
-                        <i class="material-icons">search</i>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="sample3">
-                            <label class="mdl-textfield__label" for="sample3">Text...</label>
-                        </div>
-
-                    </form>         
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <results id="results" class="mdl-grid results-flex">
+                <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
+                    <div class="mdl-card__title" style="background: url('https://image-ticketfly.imgix.net/00/02/84/29/48-og.jpg?w=400&h=400') center / cover;">
+                        <h3 class="card-h3">
+                            Band Name
+                        </h3>
+                        <h5 class="card-h5">
+                            The Varsity
+                        </h5>
+                    </div>
+                    <div class="button-container mdl-card__actions mdl-card--border">
+                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                            Map
+                        </a>
+                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                            Music
+                        </a>
+                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                            Tickets
+                        </a>
+                    </div>
                 </div>
-                <div class="search2">
-                </div>
-            </div>
+            </results>
         </div>
-    </div>
-    <div id="display">
-        <results id="results">
-          <div class="mdl-card mdl-shadow--4dp">
-                <div class="mdl-card__title">
-                    <h3>
-                        Band Name
-                    </h3>
-                </div>
-                <div class="mdl-card__title">
-                    <h5>
-                    The Varsity
-                    </h5>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <h6>City</h6>
-                    <div class="mdl-layout-spacer"></div>
-                    <h6>Genere</h6>
-                    <div class="mdl-layout-spacer"></div>
-                    <h6>Money</h6>
-                </div>
-            </div>   
-        </results>
-    </div>
+    </main>
 </body>
 </html>
