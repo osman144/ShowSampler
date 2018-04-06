@@ -68,7 +68,7 @@
 
             // Search input value ($('#searchTerm').val())
             let city= "Minneapolis";
-            let scroll = 5;
+            let scroll = 2;
 
              // TicketFLy Ajax Call
             $.ajax({
@@ -161,6 +161,7 @@
 
             }); // End of promise (TicketFly API)
 
+
             // Used to get data from the database for Last FM API call
             database.ref().orderByChild("startDate").on("child_added", function(snapshot){
                 let sv = snapshot.val();
@@ -223,11 +224,13 @@
                         );   //End of get you tube call 
 
                     }// End of else condition
-                   
+                  
+                    initMap();
                 });//End of ajax promise (LastFm API)
-
+                
             });// End of firebase database to add topTrack
            
+
             // Used to get data from the database for Youtube API call
             // function addYoutubeLink(){
             //     database.ref().orderByChild("lat").on("child_added", function(snapshot){
@@ -244,10 +247,10 @@
             }// End of if to clear the database
             
             function initMap() {
-
-                database.ref().orderByChild("dateAdded").on("child_added", function(snapshot){
+                
+                database.ref("highlyoptimized").once("value").then(function(snapshot){
                     let lv = snapshot.val();
-                    // console.log(lv.long);
+                    console.log(lv);
                     // console.log(typeof lv.long);
 
                     // location 
@@ -272,7 +275,8 @@
                     console.log(lv.latLong);
                    
 
-                    $(".iframe").append(`<p>${lv.latLong.lat}</p>`);
+                    $(".iframe").append(`<p>${lv.latLong.lat}</p>
+                                        <a href="https://www.youtube.com/watch?v=${lv.youtubeVideoID}">Click here to watch video</a>`);
                    
                     // Add Marker
                     function addMarker(coords){
@@ -285,7 +289,7 @@
                         new google.maps.InfoWindow({
                            
                             content: ` <img src="${lv.image}" alt="${lv.artistName}" width="100px" hieght="100px">
-                                            <div style="color:blue;float:right;padding-left:10px;">
+                                        <div style="color:blue;float:right;padding-left:10px;">
                                             <h2 style="color:blue;margin:0 0 5px;text-transform: capitalize;">${lv.artistName}</h2>
                                             <h2 style="color:blue;margin:0 0 5px;">${lv.venueName}</h2>
                                             <h2 style="color:blue;margin:0 0 5px;">${lv.venueAddress}</h2>
@@ -313,7 +317,7 @@
     </script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4NJBIRVfCuFbc2SnjrbihfC7QBG3B_xs&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4NJBIRVfCuFbc2SnjrbihfC7QBG3B_xs">
     </script>
 </body>
 </html>
