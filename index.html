@@ -34,10 +34,10 @@
             <div class="mdl-layout-spacer"></div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
                 <label class="mdl-button mdl-js-button mdl-button--icon" for="fixed-header-drawer-exp">
-                    <i class="material-icons">search</i>
+                    <i id="submit" class="material-icons">search</i>
                 </label>
             <div class="mdl-textfield__expandable-holder">
-                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp location-search">
+                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
             </div>
           </div>
         </header>
@@ -45,24 +45,7 @@
     <main class="mdl-layout__content">
         <div class="page-content">
             <results id="results" class="mdl-grid results-flex">
-                <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
-                    <div class="mdl-card__title" style="background: url('https://image-ticketfly.imgix.net/00/02/84/29/48-og.jpg?w=400&h=400') center / cover;">
-                        <h3 class="card-h3" id="artist-name">
-                        </h3>
-                        <h5 class="card-h5" id="venue-name">
-                        </h5>
-                        <h5 class="card-h5" id="ticket-price">
-                        </h5>
-                    </div>
-                    <div class="button-container mdl-card__actions mdl-card--border">
-                        <a id="map-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                            Map
-                        </a>
-                        <a id="ticket-purchase-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                            Tickets
-                        </a>
-                    </div>
-                </div>
+               
             </results>
         </div>
     </main>
