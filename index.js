@@ -1,19 +1,6 @@
 "use strict";
 $(document).ready(function(){
 
-    var config = {
-        apiKey: "AIzaSyCfxyrk88iFuovC_eL1q4LnTdzFpWDNdog",
-        authDomain: "highlyoptimized.firebaseapp.com",
-        databaseURL: "https://highlyoptimized.firebaseio.com",
-        projectId: "highlyoptimized",
-        storageBucket: "highlyoptimized.appspot.com",
-        messagingSenderId: "485374131862"
-      };
-    firebase.initializeApp(config);
-
-    // Globally declared Variables 
-    let database = firebase.database();
-
     // var for TicketFly API
     let artistName = "";
     let ticketPrice = "";
@@ -26,14 +13,27 @@ $(document).ready(function(){
     let image = ""
     let eventInfos = {};
     
-    // Variables for Last FM Api
-    let topTrackName = ""
-
-    // Search input value ($('#searchTerm').val())
-    let city= $("#search").val();
+    // // Variables for Last FM Api
+    // let topTrackName = ""
+    
+    // Search input value 
+    let city= "";
     let scroll = 10;
 
+    $.get("http://ipinfo.io", function (response) {
+        console.log(response.city);
+    city = response.city;
+    return city
+    }, "jsonp");
+
+    // // Search input value 
+    // let city= $("#location-search").val();
+    // let scroll = 10;
+    console.log(city)
+    
+
     $("#search").on("click", function(){
+        
      // TicketFLy Ajax Call
      $.ajax({
         url: `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
@@ -51,7 +51,6 @@ $(document).ready(function(){
 
     // Artist/Band Name
     artistName = response.events[i].name;
-    artistName = artistName.toLowerCase()
     // console.log(artistName);
 
     // Ticket Price
@@ -92,24 +91,26 @@ $(document).ready(function(){
         image = response.events[i].headliners[0].image.medium.path
         // console.log(image);
     }
-    // Object to store data's from TicketFly API
-    eventInfos = {
-        artistName:artistName,
-        ticketPrice:ticketPrice,
-        ageLimit:ageLimit,
-        venueAddress:venueAddress,
-        venueName:venueName,
-        latLong:{lat:venueLat, lng:venueLong},
-        ticketPurchaseLink:ticketPurchaseLink,
-        startDate:startDate,
-        image:image,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
-        }
-    // console.log(eventInfos);
 
-    // push the above object into the database 
-    database.ref().push(eventInfos);
-
+    let div =`  <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
+                <div class="mdl-card__title" style="background: url('${image}') center / cover;">
+                    <h3 class="card-h3">
+                        ${artistName}
+                    </h3>
+                    <h5 class="card-h5">
+                        ${venueAddress}
+                    </h5>
+                </div>
+                <div class="button-container mdl-card__actions mdl-card--border">
+                    <a id = ""class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                         Map
+                    </a>
+                    <a href="${ticketPurchaseLink}"class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                        Tickets
+                    </a>
+                </div>
+            </div>`
+    
     } // End of for loop (TicketFly API)
 
 }); // End of promise (TicketFly API)
