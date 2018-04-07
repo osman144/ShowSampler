@@ -36,7 +36,7 @@
                     <i class="material-icons">search</i>
                 </label>
             <div class="mdl-textfield__expandable-holder">
-                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
+                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp location-search">
             </div>
           </div>
         </header>
@@ -46,21 +46,18 @@
             <results id="results" class="mdl-grid results-flex">
                 <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
                     <div class="mdl-card__title" style="background: url('https://image-ticketfly.imgix.net/00/02/84/29/48-og.jpg?w=400&h=400') center / cover;">
-                        <h3 class="card-h3">
-                            Band Name
+                        <h3 class="card-h3" id="artist-name">
                         </h3>
-                        <h5 class="card-h5">
-                            The Varsity
+                        <h5 class="card-h5" id="venue-name">
+                        </h5>
+                        <h5 class="card-h5" id="ticket-price">
                         </h5>
                     </div>
                     <div class="button-container mdl-card__actions mdl-card--border">
-                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                        <a id="map-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
                             Map
                         </a>
-                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                            Music
-                        </a>
-                        <a class="button mdl-button mdl-js-button mdl-js-ripple-effect">
+                        <a id="ticket-purchase-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
                             Tickets
                         </a>
                     </div>
