@@ -4,7 +4,7 @@
 
     // ========================================= Main ================================================================
     $(document).ready(function(){
-        makeAjaxCall('Minneapolis');
+        // makeAjaxCall('Minneapolis');
         $('form').submit(handleSearchClick);
     });
 
@@ -17,6 +17,7 @@
 
             //Grab user input
             const searchInput = $('#user-input').val();
+            console.log(searchInput);
         
             //Clean up search query and call API
             $('#user-input').val('');
@@ -24,11 +25,11 @@
             const searchCity = searchInput.replace(' ', '+');
 
             //Make Ajax Call
-            makeAjaxCall(searchCity)
+            makeTicketFlyAjaxCall(searchCity)
     }
 
     //TicketFly api call
-    function makeAjaxCall(city) {
+    function makeTicketFlyAjaxCall(city) {
         let scroll = 50;
         const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
     &maxResults=${scroll}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
@@ -73,3 +74,9 @@
             }
         });
     }
+    // Google maps api call
+    function makeMapsAjaxCall(latlong){
+        const apikey= 'AIzaSyA1oE-m_GG9r2xxBtwtQ0ZNMercB9pBhPU'
+        const queryURL = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`
+    }
+    
