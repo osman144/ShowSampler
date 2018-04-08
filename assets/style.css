@@ -1,16 +1,70 @@
+/* Header Styles */
+.mdl-layout > .mdl-layout__header {
+    background-color: black;
+}
+
 .mdl-layout__header > .mdl-layout__header-row > .mdl-layout-title {
     font-family: 'Montserrat', sans-serif;
 }
 
-.event-card > .mdl-card__title > .mdl-card__title-text {
+.search {
+    font-family: 'Istok Web', sans-serif;
+}
+
+.search-button {
     font-family: 'Montserrat', sans-serif;
+}
+
+/* Card Styles */
+.mdl-card {
+    height: 256px;
+}
+.mdl-card__actions {
+    display: flex;
+    box-sizing:border-box;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+.mdl-card > .mdl-card__title {
+    background: black;
+}
+
+.mdl-card > .mdl-card__title > .mdl-card__title-text {
+    align-self: flex-start;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    font-size: 24px;
+    line-height: 32px;
+    margin-top: 0;
+}
+
+.mdl-card > .mdl-card__supporting-text {
+    font-family: 'Istok Web', sans-serif;
+    color: white;
+    background-color: black;
+    width: 95%;
+    font-size: 14px;
+    line-height: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.support-text {
+    padding-right: 16px;
+}
+
+.event-card > .mdl-card__actions > .mdl-button {
+    font-family: 'Istok Web', sans-serif;
+    color: black;
+    font-size: 16px;
+    line-height: 24px;
 }
 
 .results-flex {
     display: flex;
     justify-content: space-around;
 }
-
-
 
   

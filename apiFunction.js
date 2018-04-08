@@ -6,18 +6,19 @@
     // ========================================= Main ================================================================
     $(document).ready(function(){
 
+            makeTicketFlyAjaxCall('Minneapolis');
             // navigator.geolocation.getCurrentPosition(function(position) {
             //    let lat = position.coords.latitude
             //    let lng = position.coords.longitude
             //   console.log(lat,lng);
             // });
 
-            var geoSuccess = function(position) {            
-                startPos = position;
-                document.getElementById('startLat').innerHTML = startPos.coords.latitude;
-                document.getElementById('startLon').innerHTML = startPos.coords.longitude;
-                console.log(startPos.coords.latitude);
-              };
+            // var geoSuccess = function(position) {            
+            //     startPos = position;
+            //     document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+            //     document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+            //     console.log(startPos.coords.latitude);
+            //   };
 
         // makeMapsAjaxCall(lat,lng);
 
@@ -36,26 +37,21 @@
         event.preventDefault()
 
         //Grab user input
-        const searchInput = $('#user-input').val('');
+        const searchInput = $('#user-input').val();
 
-        if (searchInput === "")  {
-            // //Clean up search query and call API
-            // $('#user-input').val('');
-               
-            const searchCity = searchInput.replace(' ', '+');
+        const searchCity = searchInput.replace(' ', '+');
 
-            //Make Ajax Call
-            makeTicketFlyAjaxCall(searchCity)
-        } else {
-            alert('give us a valid input');
-        };       
+        //Make Ajax Call
+        makeTicketFlyAjaxCall(searchCity)
+      
     };
 
     //TicketFly api call
     function makeTicketFlyAjaxCall(city) {
-        let scroll = 50;
+        console.log('TF on the way!');
+        let number = 50;
         const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
-    &maxResults=${scroll}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
+    &maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
         $.ajax({
             url: queryURL,
             method: "GET",
@@ -80,16 +76,17 @@
                 let ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
                 let image = response.events[i].headliners[0].image
 
-                let eventCard =`<div class="event-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
-                <div class="mdl-card__title">
+                let eventCard =`<div class="mdl-card demo-card-event mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+                <div class="mdl-card__title mdl-card--expand">
                     <h1 class="mdl-card__title-text">${name}</h1>
-                </div>
+                </div> 
                 <div class="mdl-card__supporting-text">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.</p>
-                </div>    
+                    <div class="support-text">${venueName}</div>
+                    <div class="support-text">${startDate}</div>
+                </div>
                 <div class="mdl-card__actions mdl-card--border">
-                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Read More</a>
-                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Read More</a>
+                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
+                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
                 </div>
                 </div>`
             
@@ -99,7 +96,7 @@
     }
     // Google maps api call
     function makeMapsAjaxCall(lat,lng){
-        alert('on my way!');
+        alert('GM on the way!');
         const apiKey= 'AIzaSyA1oE-m_GG9r2xxBtwtQ0ZNMercB9pBhPU'
         const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
 
