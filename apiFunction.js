@@ -1,32 +1,55 @@
 "use strict";
     // ========================================= Variables ===========================================================
-
+        let lat = 44.977753
+        let lng = -93.265011
 
     // ========================================= Main ================================================================
     $(document).ready(function(){
-        // makeAjaxCall('Minneapolis');
+
+            // navigator.geolocation.getCurrentPosition(function(position) {
+            //    let lat = position.coords.latitude
+            //    let lng = position.coords.longitude
+            //   console.log(lat,lng);
+            // });
+
+            var geoSuccess = function(position) {            
+                startPos = position;
+                document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+                document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+                console.log(startPos.coords.latitude);
+              };
+
+        // makeMapsAjaxCall(lat,lng);
+
         $('form').submit(handleSearchClick);
     });
 
     // ======================================== Functions ===========================================================
+    // Try HTML5 geolocation.
+   
 
+    
+    
     function handleSearchClick(event) {
 
-            //Ensure sure form doesnt submit and reset the page
-            event.preventDefault()
+        //Ensure sure form doesnt submit and reset the page
+        event.preventDefault()
 
-            //Grab user input
-            const searchInput = $('#user-input').val();
-            console.log(searchInput);
-        
-            //Clean up search query and call API
-            $('#user-input').val('');
-        
+        //Grab user input
+        const searchInput = $('#user-input').val('');
+
+        if (searchInput === "")  {
+            // //Clean up search query and call API
+            // $('#user-input').val('');
+               
             const searchCity = searchInput.replace(' ', '+');
 
             //Make Ajax Call
             makeTicketFlyAjaxCall(searchCity)
-    }
+        } else {
+            alert('give us a valid input');
+        };       
+    };
 
     //TicketFly api call
     function makeTicketFlyAjaxCall(city) {
@@ -75,8 +98,20 @@
         });
     }
     // Google maps api call
-    function makeMapsAjaxCall(latlong){
-        const apikey= 'AIzaSyA1oE-m_GG9r2xxBtwtQ0ZNMercB9pBhPU'
-        const queryURL = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`
+    function makeMapsAjaxCall(lat,lng){
+        alert('on my way!');
+        const apiKey= 'AIzaSyA1oE-m_GG9r2xxBtwtQ0ZNMercB9pBhPU'
+        const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+
+        $.ajax({
+            url: queryURL,
+            method: "GET",
+            data: {
+                apiKey: apiKey,
+                lat: lat,
+                lng: lng
+            }
+        }).then(function(response) {
+            console.log(response);
+            })
     }
-    
