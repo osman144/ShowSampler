@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Show Sampler</title>
+
+    <!--CSS-->
     <link rel="stylesheet" href="./assets/style.css">
 
-    <!--Google font-->
+    <!--Google Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Istok+Web" rel="stylesheet">
 
@@ -15,13 +17,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+   
+    <!-- Jquery CDN -->
     <script
     src="https://code.jquery.com/jquery-3.3.1.js"
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
    
 </head>
 <body>
@@ -32,23 +33,19 @@
             <span class="mdl-layout-title">Show Sampler</span>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
-                <label class="mdl-button mdl-js-button mdl-button--icon" for="fixed-header-drawer-exp">
-                    <i id="submit" class="material-icons">search</i>
-                </label>
-            <div class="mdl-textfield__expandable-holder">
-                <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
-            </div>
+            <form>
+                <input type="text" id="user-input" placeholder="Search..">
+                <button id="search" type="submit">Submit</button>
+            </form>
           </div>
         </header>
 
     <main class="mdl-layout__content">
         <div class="page-content">
             <results id="results" class="mdl-grid results-flex">
-               
             </results>
         </div>
     </main>
-    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript" src="./apiFunction.js"></script>
 </body>
 </html>
