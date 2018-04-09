@@ -34,19 +34,23 @@
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <form id="search-form">
-                <input class ="search" type="text" id="user-input" placeholder="City">
-                <button class="search-button" id="search-button" pattern="[Bb]anana" type="submit">Search</button>
+                <input class="search" type="text" required pattern="[A-Za-z' -]+" title="please make sure you've entered a valid city name" id="user-input" placeholder="City">
+                <button class="search-button" id="search-button"  type="submit">Search</button>
             </form>
           </div>
         </header>
 
     <main class="mdl-layout__content">
         <div class="page-content">
+            <div id="map">
+            </div>
             <results id="results" class="mdl-grid results-flex">
             </results>
         </div>
     </main>
-    <!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>  -->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQNQGxYcg1AvHmQXr6IroYl1yneo_RUv4&callback=initMap">
+    </script>
     <script type="text/javascript" src="./apiFunction.js"></script>
 </body>
 </html>

@@ -28,6 +28,8 @@ $(document).ready(function(){
         //Ensure sure form doesnt submit and reset the page
         e.preventDefault()
 
+        // Clear map
+        $("#map").css("display", "none")
         //Grab user input
         const searchInput = $('#user-input').val();
 
@@ -67,9 +69,9 @@ $(document).ready(function(){
                 let venueAddress = response.events[i].venue.address1;
                 let venueName = response.events[i].venue.name;
                 let venueLat = response.events[i].venue.lat;
-                // let venueLat = +venueLat;
+                let venueCleanLat = +venueLat;
                 let venueLong = response.events[i].venue.lng;
-                // let venueLong = +venueLong;
+                let venueCleanLong = +venueLong;
                 let startDate = response.events[i]. startDate;
                 let ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
                 let image = response.events[i].headliners[0].image
@@ -91,8 +93,8 @@ $(document).ready(function(){
                     <div class="support-text">${startDate}</div>
                 </div>
                 <div class="mdl-card__actions mdl-card--border">
-                    <a tabindex="0" class="mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
-                    <a tabindex="0" class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
+                    <a id="showMap" data-lat="${venueCleanLat}" data-long="${venueCleanLong}" href="#map" class="button mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
+                    <a tabindex="0" href="${ticketPurchaseLink}" target="_blank" class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
                 </div>
                 </div>`
             
@@ -122,3 +124,40 @@ $(document).ready(function(){
             makeTicketFlyAjaxCall(cleanCity);
         })
     }
+
+    // Create Map
+    function initMap() {
+        console.log("map")
+        $(document).on("click","#showMap", function(){
+        console.log("map");
+        $("#map").css("display","block");
+        let string =$(this).attr("data-lat");
+        let lat =$(this).data("lat")
+        let long =$(this).data("long");
+        long =+long
+        console.log($(this).attr("data-lat"));
+        console.log(typeof long);
+       
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: {lat: lat, lng: long}
+          });
+  
+          let marker = new google.maps.Marker({
+            map: map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            position: {lat: lat, lng: long}
+          });
+          marker.addListener('click', toggleBounce);
+        });
+        }
+        
+        //Animate button
+        function toggleBounce() {
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
