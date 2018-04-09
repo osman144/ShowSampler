@@ -78,7 +78,7 @@ $(document).ready(function(){
                 
                 if (image === null){
                 //  console.log("Not Available");
-                image = "Not Available";
+                image = "http://www.aal-europe.eu/wp-content/uploads/2013/12/events_medium.jpg";
                 }else{
                 image = response.events[i].headliners[0].image.jumbo.path
                 // console.log(image);
