@@ -1,48 +1,45 @@
 "use strict";
-    // ========================================= Variables ===========================================================
-        let lat = 44.977753
-        let lng = -93.265011
-
     // ========================================= Main ================================================================
-    $(document).ready(function(){
+$(document).ready(function(){
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude
+            const lng = position.coords.longitude
+            console.log(lat,lng);
+            makeMapsAjaxCall(lat,lng);
+        },
+        function(error) {
+            const lat = 44.977753
+            const lng = -93.265011
+            console.log(error);
+            makeMapsAjaxCall(lat,lng);
+            }
+        );
 
-            makeTicketFlyAjaxCall('Minneapolis');
-            // navigator.geolocation.getCurrentPosition(function(position) {
-            //    let lat = position.coords.latitude
-            //    let lng = position.coords.longitude
-            //   console.log(lat,lng);
-            // });
+        $('#search-form').submit(handleSearchClick)
 
-            // var geoSuccess = function(position) {            
-            //     startPos = position;
-            //     document.getElementById('startLat').innerHTML = startPos.coords.latitude;
-            //     document.getElementById('startLon').innerHTML = startPos.coords.longitude;
-            //     console.log(startPos.coords.latitude);
-            //   };
+        $()
 
-        // makeMapsAjaxCall(lat,lng);
-
-        $('form').submit(handleSearchClick);
     });
 
     // ======================================== Functions ===========================================================
-    // Try HTML5 geolocation.
-   
 
-    
-    
-    function handleSearchClick(event) {
+    function handleSearchClick(e) {
 
         //Ensure sure form doesnt submit and reset the page
-        event.preventDefault()
+        e.preventDefault()
 
         //Grab user input
         const searchInput = $('#user-input').val();
+
+        if (searchInput === "") {
+            alert('wrong!')
+        } else {
 
         const searchCity = searchInput.replace(' ', '+');
 
         //Make Ajax Call
         makeTicketFlyAjaxCall(searchCity)
+        }
       
     };
 
@@ -50,8 +47,7 @@
     function makeTicketFlyAjaxCall(city) {
         console.log('TF on the way!');
         let number = 50;
-        const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
-    &maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
+        const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}&maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
         $.ajax({
             url: queryURL,
             method: "GET",
@@ -62,6 +58,8 @@
                 'Access-Control-Allow-Origin': '*',
             }
         }).then(function(response) {
+            console.log(response);
+            $('#results').empty();
             for (let i=0;i<response.events.length;i++){
 
                 let name = response.events[i].name
@@ -103,12 +101,16 @@
         $.ajax({
             url: queryURL,
             method: "GET",
-            data: {
-                apiKey: apiKey,
-                lat: lat,
-                lng: lng
-            }
+
         }).then(function(response) {
-            console.log(response);
-            })
+            const currentCity = response.results[0].address_components.find(function(element) {
+                return element.types.includes('locality')
+            }).long_name
+
+            const cleanCity =currentCity.trim().replace(' ', '+');
+
+            console.log(cleanCity);
+            
+            makeTicketFlyAjaxCall(cleanCity);
+        })
     }
