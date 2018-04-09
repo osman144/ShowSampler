@@ -76,15 +76,15 @@ $(document).ready(function(){
 
                 let eventCard =`<div class="mdl-card demo-card-event mdl-shadow--2dp mdl-cell mdl-cell--4-col">
                 <div class="mdl-card__title mdl-card--expand">
-                    <h1 class="mdl-card__title-text">${name}</h1>
+                    <h1 tabindex="0" class="mdl-card__title-text">${name}</h1>
                 </div> 
-                <div class="mdl-card__supporting-text">
+                <div tabindex="0" class="mdl-card__supporting-text">
                     <div class="support-text">${venueName}</div>
                     <div class="support-text">${startDate}</div>
                 </div>
                 <div class="mdl-card__actions mdl-card--border">
-                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
-                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
+                    <a tabindex="0" class="mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
+                    <a tabindex="0" class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
                 </div>
                 </div>`
             
