@@ -73,9 +73,17 @@ $(document).ready(function(){
                 let startDate = response.events[i]. startDate;
                 let ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
                 let image = response.events[i].headliners[0].image
+                
+                if (image === null){
+                //  console.log("Not Available");
+                image = "Not Available";
+                }else{
+                image = response.events[i].headliners[0].image.jumbo.path
+                // console.log(image);
+                }
 
                 let eventCard =`<div class="mdl-card demo-card-event mdl-shadow--2dp mdl-cell mdl-cell--4-col">
-                <div class="mdl-card__title mdl-card--expand">
+                <div class="mdl-card__title mdl-card--expand" style="background: url('${image}') center / cover;">
                     <h1 tabindex="0" class="mdl-card__title-text">${name}</h1>
                 </div> 
                 <div tabindex="0" class="mdl-card__supporting-text">
