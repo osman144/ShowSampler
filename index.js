@@ -43,7 +43,6 @@ $(document).ready(function(){
 
     //TicketFly api call
     function makeTicketFlyAjaxCall(city) {
-        console.log('TF on the way!');
         let number = 50;
         const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}&maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
         $.ajax({
