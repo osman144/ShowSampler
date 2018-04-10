@@ -1,221 +1,158 @@
 "use strict";
+    // ========================================= Main ================================================================
 $(document).ready(function(){
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude
+            const lng = position.coords.longitude
+            console.log(lat,lng);
+            makeMapsAjaxCall(lat,lng);
+        },
+        function(error) {
+            const lat = 44.977753
+            const lng = -93.265011
+            console.log(error);
+            makeMapsAjaxCall(lat,lng);
+            }
+        );
 
-    // var for TicketFly API
-    let artistName = "";
-    let ticketPrice = "";
-    let venueAddress = "";
-    let venueName = "";
-    let venueLat = 0;
-    let venueLong = 0;
-    let ticketPurchaseLink= "";
-    let startDate = "";
-    let image = ""
-    let eventInfos = {};
-    
-    // // Variables for Last FM Api
-    // let topTrackName = ""
-    
-    // Search input value 
-    let city= "";
-    let inputCity =""
-    let scroll = 10;
+        $('#search-form').submit(handleSearchClick)
+    });
 
-    $.get("http://ipinfo.io", function (response) {
-        console.log(response.city);
-    city = response.city;
-   console.log(city)
-    }, "jsonp");
+    // ======================================== Functions ===========================================================
 
-    // // Search input value 
-    // let city= $("#location-search").val();
-    // let scroll = 10;
-    // console.log(city)
-    
-    // callTicketFlyApi(city);
-    // console.log(callTicketFlyApi("Minneapolis"))
-    // $("#search").on("click", function(){
-    // let callTicketFlyApi = function(CityName) {
+    function handleSearchClick(e) {
 
-    
-        
-     // TicketFLy Ajax Call
-            $.ajax({
-                url: `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}
-                    &maxResults=${scroll}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`,
-                method: "GET",
-                dataType: 'jsonp',
-                cors: true,
-                secure: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                }
+        //Ensure sure form doesnt submit and reset the page
+        e.preventDefault()
+
+        // Clear map
+        $("#map").css("display", "none")
+        //Grab user input
+        const searchInput = $('#user-input').val();
+
+        if (searchInput === "") {
+        } else {
+
+        const searchCity = searchInput.replace(' ', '+');
+
+        //Make Ajax Call
+        makeTicketFlyAjaxCall(searchCity)
+        }
+      
+    };
+
+    //TicketFly api call
+    function makeTicketFlyAjaxCall(city) {
+        console.log('TF on the way!');
+        let number = 50;
+        const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}&maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
+        $.ajax({
+            url: queryURL,
+            method: "GET",
+            dataType: 'jsonp',
+            cors: true,
+            secure: true,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            }
         }).then(function(response) {
             console.log(response);
-            console.log(city)
+            $('#results').empty();
             for (let i=0;i<response.events.length;i++){
 
-            // Artist/Band Name
-            artistName = response.events[i].name;
-            // console.log(artistName);
-
-            // Ticket Price
-            ticketPrice = response.events[i].ticketPrice;
-            console.log(ticketPrice);
-                    
-            // Venue Address
-            venueAddress = response.events[i].venue.address1;
-            // console.log(venueAddress);
-
-            // Venue Name
-            venueName = response.events[i].venue.name;
-            // console.log(venueName);
-
-            // Venue Lat and Long
-            venueLat = response.events[i].venue.lat;
-            venueLat = +venueLat;
-            venueLong = response.events[i].venue.lng;
-            venueLong = +venueLong;
-            // console.log(typeof venueLong);
-            // console.log(venueLat);
-
-
-            // Start Date
-            startDate = response.events[i]. startDate;
-            // console.log(startDate);
-
-            // Ticket Buying Link 
-            ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
-            // console.log(ticketPurchaseLink);
-
-            // Image Link
-            image = response.events[i].headliners[0].image
-            if (image === null){
-                //  console.log("Not Available");
-                image = "Not Available";
-            }else{
-                image = response.events[i].headliners[0].image.medium.path
-                // console.log(image);
-            }
-
-            let div =` <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
-            <div class="mdl-card__title" style="background: url('${image}') center / cover;">
-                <h3 class="card-h3" id="${artistName}">
-                    ${artistName}
-                </h3>
-                <h5 class="card-h5" id="${venueName}">
-                    ${venueName}
-                </h5>
-                <h5 class="card-h5" id="${ticketPrice}">
-                    ${ticketPrice}
-                </h5>
-            </div>
-            <div class="button-container mdl-card__actions mdl-card--border">
-                <a id="map-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                    Map
-                </a>
-                <a id="ticket-purchase-button" href="${ticketPurchaseLink}" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                    Tickets
-                </a>
-            </div>
-        </div>`
-            $("#results").append(div);
-            } // End of for loop (TicketFly API)
-
-        }); // End of promise (TicketFly API)
-        
-        $("#submit").on("click", function(){
-            let input = $("#fixed-header-drawer-exp").val();
-            if (input===""){
-
-            }else{
-            $.ajax({
-                url: `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${input}
-                    &maxResults=${scroll}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`,
-                method: "GET",
-                dataType: 'jsonp',
-                cors: true,
-                secure: true,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                }
-        }).then(function(response) {
-            $("#results").empty();
-            
-            for (let i=0;i<response.events.length;i++){
-
-                // Artist/Band Name
-                artistName = response.events[i].name;
-                // console.log(artistName);
-    
-                // Ticket Price
-                ticketPrice = response.events[i].ticketPrice;
-                console.log(ticketPrice);
-                        
-                // Venue Address
-                venueAddress = response.events[i].venue.address1;
-                // console.log(venueAddress);
-    
-                // Venue Name
-                venueName = response.events[i].venue.name;
-                // console.log(venueName);
-    
-                // Venue Lat and Long
-                venueLat = response.events[i].venue.lat;
-                venueLat = +venueLat;
-                venueLong = response.events[i].venue.lng;
-                venueLong = +venueLong;
-                // console.log(typeof venueLong);
-                // console.log(venueLat);
-    
-    
-                // Start Date
-                startDate = response.events[i]. startDate;
-                // console.log(startDate);
-    
-                // Ticket Buying Link 
-                ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
-                // console.log(ticketPurchaseLink);
-    
-                // Image Link
-                image = response.events[i].headliners[0].image
+                let name = response.events[i].name
+                let ticketPrice = response.events[i].ticketPrice;
+                let venueAddress = response.events[i].venue.address1;
+                let venueName = response.events[i].venue.name;
+                let venueLat = response.events[i].venue.lat;
+                let venueCleanLat = +venueLat;
+                let venueLong = response.events[i].venue.lng;
+                let venueCleanLong = +venueLong;
+                let startDate = response.events[i]. startDate;
+                let ticketPurchaseLink= response.events[i].ticketPurchaseUrl;
+                let image = response.events[i].headliners[0].image
+                
                 if (image === null){
-                    //  console.log("Not Available");
-                    image = "Not Available";
+                //  console.log("Not Available");
+                image = "http://www.aal-europe.eu/wp-content/uploads/2013/12/events_medium.jpg";
                 }else{
-                    image = response.events[i].headliners[0].image.medium.path
-                    // console.log(image);
+                image = response.events[i].headliners[0].image.jumbo.path
+                // console.log(image);
                 }
-    
-                let div =` <div class="event-card mdl-card mdl-shadow--4dp mdl-cell mdl-cell--4-col">
-                <div class="mdl-card__title" style="background: url('${image}') center / cover;">
-                    <h3 class="card-h3" id="${artistName}">
-                        ${artistName}
-                    </h3>
-                    <h5 class="card-h5" id="${venueName}">
-                        ${venueName}
-                    </h5>
-                    <h5 class="card-h5" id="${ticketPrice}">
-                        ${ticketPrice}
-                    </h5>
+
+                let eventCard =`<div class="mdl-card demo-card-event mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+                <div class="mdl-card__title mdl-card--expand" style="background: url('${image}') center / cover;">
+                    <h1 tabindex="0" class="mdl-card__title-text">${name}</h1>
+                </div> 
+                <div tabindex="0" class="mdl-card__supporting-text">
+                    <div class="support-text">${venueName}</div>
+                    <div class="support-text">${startDate}</div>
                 </div>
-                <div class="button-container mdl-card__actions mdl-card--border">
-                    <a id="map-button" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                        Map
-                    </a>
-                    <a id="ticket-purchase-button" href="${ticketPurchaseLink}" class="button mdl-button mdl-js-button mdl-js-ripple-effect">
-                        Tickets
-                    </a>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a id="showMap" href="#myDiv" data-lat="${venueCleanLat}" data-long="${venueCleanLong}" href="#map" class="button mdl-button mdl-js-button mdl-js-ripple-effect">Map</a>
+                    <a tabindex="0" href="${ticketPurchaseLink}" target="_blank" class="mdl-button mdl-js-button mdl-js-ripple-effect">Tickets</a>
                 </div>
-            </div>`
-                $("#results").append(div);
+                </div>`
+            
+                $("#results").append(eventCard);
             }
         });
-           
-        }
+    }
+    // Google maps api call
+    function makeMapsAjaxCall(lat,lng){
+        const apiKey= 'AIzaSyA1oE-m_GG9r2xxBtwtQ0ZNMercB9pBhPU'
+        const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+
+        $.ajax({
+            url: queryURL,
+            method: "GET",
+
+        }).then(function(response) {
+            const currentCity = response.results[0].address_components.find(function(element) {
+                return element.types.includes('locality')
+            }).long_name
+
+            const cleanCity =currentCity.trim().replace(' ', '+');
+
+            console.log(cleanCity);
+            
+            makeTicketFlyAjaxCall(cleanCity);
         })
-    // }
-// }); //End Of search click event
+    }
 
-
-})
+    // Create Map
+    function initMap() {
+        console.log("map")
+        $(document).on("click","#showMap", function(){
+        console.log("map");
+        $("#map").css("display","block");
+        let string =$(this).attr("data-lat");
+        let lat =$(this).data("lat")
+        let long =$(this).data("long");
+        long =+long
+        console.log($(this).attr("data-lat"));
+        console.log(typeof long);
+       
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: {lat: lat, lng: long}
+          });
+  
+          let marker = new google.maps.Marker({
+            map: map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            position: {lat: lat, lng: long}
+          });
+          marker.addListener('click', toggleBounce);
+        });
+        }
+        
+        //Animate button
+        function toggleBounce() {
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
