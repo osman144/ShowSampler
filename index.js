@@ -44,7 +44,7 @@ $(document).ready(function(){
     //TicketFly api call
     function makeTicketFlyAjaxCall(city) {
         let number = 50;
-        const queryURL = `http://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}&maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
+        const queryURL = `https://www.ticketfly.com/api/events/upcoming.json?orgId=1&q=${city}&maxResults=${number}&fieldGroup=light&fields=id,startDate,venue.name,venue.address1,headliners,showType,venue.lat,venue.lng`
         $.ajax({
             url: queryURL,
             method: "GET",
