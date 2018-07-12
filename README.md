@@ -17,3 +17,6 @@ It's friday night and you want to go out but have no idea who or what is playing
 * Google Geocode API
 * Google Maps API
 * TicketFly API
+
+
+![ShowSampler](https://i.imgur.com/BnFG0DG.jpg "Shows")
